@@ -54,7 +54,7 @@
         num    (re-frame/subscribe [:pagenum])
         images (re-frame/subscribe [:images])]
     (fn [logged-in?]
-      (let [coll  (dec (count (db/get-image-coll @images)))
+      (let [coll  (dec (count (get-image-coll @images)))
             home? (= @num 2)]
         [ui/bottom-navigation {:selected-index @index}
          [nav-item (ic/av-skip-previous)     "first page"    0 (not= @num 0)    :set-pagenum 0]

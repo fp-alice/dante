@@ -19,9 +19,6 @@
                                          :password       ""
                                          :password-check ""}}))
 
-(defn get-image-coll [images]
-  (partition-all 20 images))
-
 (defn map->paths
   "Turns map into vector of deepest nodes"
   ([m] (map->paths [] m))
@@ -49,7 +46,7 @@
        set
        (fn [db [_ value]]
          ;; (println get " : " value)
-         (assoc-in db path value)))
+    (assoc-in db path value)))
       (re-frame/reg-sub-raw
        get
        (fn [db]
