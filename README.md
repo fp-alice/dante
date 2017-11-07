@@ -17,16 +17,14 @@ Planning on writing a Clojure screenshot tool soon.
 #!/bin/sh
 tmp=$(mktemp /tmp/XXXXXXXXXXXXXXXXXXX.png)
 xclip -i -selection clipboard -t text/uri-list $tmp
-
 sleep 0.2;
 gnome-screenshot -a -f $tmp
-
 tmpsize=$(wc -c <"$tmp")
 if [ $tmpsize != 0 ]; then
-        out=$(curl -X POST -H "content-type: multipart/form-data" YOURURL.WTF/upload -F "key=YOURKEY" -F "image=@$tmp")
-        final=$(sed -e 's/^"//' -e 's/"$//' <<<"$out")
-        echo $final | xclip -selection clipboard
-        xdg-open $final
+out=$(curl -X POST -H "content-type: multipart/form-data" http://localhost:3000/api/upload -F "key=A KEY HERE" -F "image=@$tmp")
+final=$(sed -e 's/^"//' -e 's/"$//' <<<"$out")
+echo $final | xclip -selection clipboard
+xdg-open $final
 fi
 ```
 
