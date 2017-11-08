@@ -30,13 +30,11 @@ fi
 Some images.
 
 
-![Login page](login page.png "Login page")
+![Login page](https://github.com/antflga/dante/blob/master/login%20page.png?raw=true "Login page")
 
+![Home page](https://github.com/antflga/dante/blob/master/dante%20dashboard.png?raw=true "Home page")
 
-![Home page](dante dashboard.png "Home page")
-
-
-![Info page](info page.png "Info page")
+![Info page](https://github.com/antflga/dante/blob/master/info%20page.png?raw=true "Info page")
 
 
 You need to generate your own pub/privkeys to use.
