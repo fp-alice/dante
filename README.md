@@ -1,6 +1,5 @@
 > Consider your origins: you were not made to live as brutes, but to follow virtue and knowledge.
-
-> \- Dante Alighieri
+\- Dante Alighieri
 
 As it stands, I upload screenshots to my own private server as an alternative to other services.
 - puu.sh
@@ -27,6 +26,17 @@ echo $final | xclip -selection clipboard
 xdg-open $final
 fi
 ```
+
+Some images.
+
+
+![Login page](login page.png "Login page")
+
+
+![Home page](dante dashboard.png "Home page")
+
+
+![Info page](info page.png "Info page")
 
 
 You need to generate your own pub/privkeys to use.

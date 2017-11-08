@@ -3,8 +3,12 @@
             [dante.views.login :as login]
             [dante.views.info :as info]))
 
-(defmulti views identity)
-(defmethod views :home    [] [home/home])
-(defmethod views :login   [] [login/login])
-(defmethod views :info    [] [info/info])
-(defmethod views :default [] [:div])
+(defmulti view identity)
+(defmethod view :home    [] [home/home])
+(defmethod view :login   [] [login/login])
+(defmethod view :info    [] [info/info])
+(defmethod view :default [] [:div])
+
+(defn views [panel]
+  (accountant.core/navigate! (str "/#/" (name panel)))
+  (view panel))

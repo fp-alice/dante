@@ -13,7 +13,7 @@
                               :links    []
                               :key      ""
                               :panel :login
-                              :bottom-page 2
+                              :bottom-page 0;2
                               :pagenum 0
                               :login    {:username       ""
                                          :password       ""

@@ -95,7 +95,7 @@
 
 (def pkey
   "Private key and auth string"
-  (ks/private-key (io/resource "auth_privkey.pem") "password"))
+  (ks/private-key (io/resource "auth_privkey.pem") (string/trim-newline (slurp ".pw.txt"))))
 
 (defn create-auth-token [credentials]
   "Creates a token for user `credentials` and uses it as their session key"

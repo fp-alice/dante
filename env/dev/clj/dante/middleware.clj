@@ -31,23 +31,15 @@
 
 (defn wrap-user [handler]
   (fn [req]
-    (let [;;session (get-in req [:params :session])
-          vec  (str (first (:compojure/route req)))
-          uri  (:uri req)
-          ;;user (comment (mc/find-one-as-map db "users" {:session session}))
-          ]
+    (let [vec (str (first (:compojure/route req)))
+          uri (:uri req)]
       (println "\n")
       (frame-text (date))
       (info (str vec " - " uri))
       (handler req))))
-#_(if user
-  (handler (assoc-in req [:params :user] user))
-  (handler (assoc-in req [:params :user] nil)))
+
 (defn wrap-middleware [handler]
   (-> handler
-      #_(wrap-cors :access-control-allow-origin #".*."
-                 :access-control-allow-methods [:get :put :post]
-                 :access-control-allow-headers ["Content-Type"])
       (wrap-routes wrap-keyword-params)
       (wrap-routes wrap-json-params)
       (wrap-routes wrap-json-response)

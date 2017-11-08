@@ -30,7 +30,8 @@
                             "gnome-screenshot -a -f $tmp"
                             "tmpsize=$(wc -c <\"$tmp\")"
                             "if [ $tmpsize != 0 ]; then"
-                            (str "out=$(curl -X POST -H \"content-type: multipart/form-data\" " url "upload -F \"key=" @token "\" -F \"image=@$tmp\")")
+                            (str "out=$(curl -X POST -H \"content-type: multipart/form-data\" "
+                                 url "upload -F \"key=" @token "\" -F \"image=@$tmp\")")
                             "final=$(sed -e 's/^\"//' -e 's/\"$//' <<<\"$out\")"
                             "echo $final | xclip -selection clipboard"
                             "xdg-open $final"
