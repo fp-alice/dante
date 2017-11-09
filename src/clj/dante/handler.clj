@@ -4,7 +4,7 @@
             [compojure.route :refer [not-found resources]]
             [dante.middleware :refer [wrap-middleware]]
             [hiccup.page :refer [html5 include-css include-js]]
-            [dante.util :refer [frame-text info]]
+            [dante.util :refer [frame-text info in?]]
             [dante.db :as db]
             [ring.util.io :as rio]
             [ring.util.response :as r]
@@ -12,7 +12,8 @@
             [monger.core :as mg]
             [monger.collection :as mc]
             [monger.conversion :as c]
-            [ring.util.response :as res])
+            [ring.util.response :as res]
+            [clojure.string :as string])
   (:import [com.mongodb DB DBObject]
            org.bson.types.ObjectId
            [com.mongodb.gridfs GridFS GridFSInputFile]
@@ -49,24 +50,28 @@
     (include-js "/js/app.js")]))
 
 (defn upload
-  "Uploads a file given in `request` to gridfs"
   [request]
-  (let [image     (:image request)
-        file-name (:filename image)
-        file      (:tempfile image)]
-    {:status 200
-     :body   (db/store-img file file-name (:key request))}))
+  (let [image                              (:image request)
+        keyvec                             [:filename :tempfile :size :content-type]
+        [file-name file size type :as all] (map #(get image %) keyvec)]
+    (clojure.pprint/pprint request)
+    (clojure.pprint/pprint all)
+    (if (and (in? ["image/gif" "image/jpeg" "image/png"] type) (< size 50000))
+      (let [res (db/store-img file file-name (:key request))]
+        (println res)
+        {:status 200
+         :body   res}) {:status 500 :body ("Content type " type " not allowed.")})))
 
 (defn session
   "Authenticates a user"
   [req]
   (let [user-map {:username (:username req) :password (:password req)}
-        user (db/authenticate-user user-map)]
+        user     (db/authenticate-user user-map)]
     (println user)
     {:status 200 :body user}))
 
 (defn make-file-stream
-  "Takes an input stream--such as a MongoDBObject stream--and streams it"
+  "Takes an input stream `file` -- such as a MongoDBObject stream and streams it"
   [file]
   (rio/piped-input-stream
    (fn [output-stream]
@@ -76,10 +81,10 @@
   "Gets an image link for the md5 in `req`"
   [req]
   (if (not (nil? (:md5 req)))
-    (:status 200 :body {:url (str "http://localhost:3000/i/" (:md5 req))})))
+    (:status 200 :body {:url (str (:md5 req))})))
 
 (defn download-file-by-id
-  "Downloads the requested file, if privileges are allowed"
+  "Downloads the requested file with `md5`, if privileges are allowed"
   [md5]
   (let [mongo-file   (first (db/get-file-md5 md5))
         file-map     (db/find-map-by-md5 md5)
@@ -104,14 +109,14 @@
 
 (defroutes routes
   (context "/api" []
-    (POST "/upload" {params :params} (if (not-any? nil? (map #(get params %) [:image :key]))
-                                       (upload params)))
-    (POST "/sign-up" {params :params} (sign-up params))
-    (POST "/user-session" {params :params} (session params))
-    (POST "/img" [req] (get-image req))
-    (POST "/auth" {params :params} (auth-with-session params)))
+           (POST "/upload" {params :params} (if (not-any? nil? (map #(get params %) [:image :key]))
+                                              (upload params)))
+           (POST "/sign-up" {params :params} (sign-up params))
+           (POST "/user-session" {params :params} (session params))
+           (POST "/img" [req] (get-image req))
+           (POST "/auth" {params :params} (auth-with-session params)))
   (GET "/" [] (loading-page))
-  (GET "/i/:md5" [md5] (download-file-by-id md5))
+  (GET "/i/:md5" [md5] (download-file-by-id (first (string/split md5 #"\."))))
   (resources "/")
   (not-found "Not Found"))
 

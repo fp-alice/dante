@@ -19,7 +19,7 @@
                   :scope "provided"]
                  [com.google.guava/guava "23.0"]
                  [secretary "1.2.3"]
-                 [venantius/accountant "0.2.2"
+                 [venantius/accountant "0.2.3"
                   :exclusions [org.clojure/tools.reader]]
                  [cljsjs/material-ui "0.19.2-0"]
                  [cljs-react-material-ui "0.2.50"]

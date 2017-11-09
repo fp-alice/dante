@@ -7,7 +7,7 @@
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
 (def url "http://localhost:3000/")
-
+;; (def url "http://shekels.wtf/")
 (defn- json-req [location params-map function & type]
   (go (let [url (str url location)
             response (<! (http/post

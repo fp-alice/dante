@@ -23,3 +23,17 @@
 
 (defn info [& strings]
   (println (format-str strings :init "├╼ ")))
+
+(defn in?
+  "Checks if seq `coll` contains member `elem`."
+  [coll elem]
+  (let [coll    (seq coll)
+        non-nil (not-any? nil? (vector coll elem))]
+    (if non-nil
+      (some #(= elem %) coll)
+      false)))
+
+(defn url [prod?]
+  (if prod?
+    "http://shekels.wtf/"
+    "http://localhost:3000/"))

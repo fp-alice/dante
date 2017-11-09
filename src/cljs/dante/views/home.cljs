@@ -5,6 +5,7 @@
             [clojure.string :as string]
             [goog.dom :as gdom]
             [goog.events :as gevents]
+            [accountant.core :as accountant]
             [cljs-react-material-ui.icons :as ic])
   (:import [goog.dom query]))
 
@@ -34,32 +35,32 @@
 
 (defn card-from-image [img]
   (let [img  (str img)
-        link (str "http://localhost:3000/i/" img)
+        link (str "http://localhost:3000/i/" img ".png")
         page (re-frame/subscribe [:pagenum])]
     (fn []
       [ui/card
-      [ui/card-media  {:style {:overflow "hidden"
-                               :width "100%"
-                               :height "100%"
-                               :position "relative"}} ;;  {:style {:position "relative"}}
+       [ui/card-media  {:style {:overflow "hidden"
+                                :width    "100%"
+                                :height   "100%"
+                                :position "relative"}} ;;  {:style {:position "relative"}}
 
-       ;;Hidden lightbox
-       [:a {:href  (str "#/home/")
-            :class "lightbox"
-            :id    (str "/home/" img)
-            :style {:display "hidden"}}
-        [:img {:src link
-               :href link}]]
-       ;;Thumbnail
-       [:a {:href  (str "#/home/" img)}
-        [:div [:img {:src link
-                     :class "thumbnail"
-                     :style {:max-height "30vh"}}]]]]
-      [ui/flat-button {:on-click #(copy-text link)
-                       :label    img
-                       :style    {:width    "100%"
-                                  :position "relative"
-                                  :overflow "visible"}}]])))
+        ;;Hidden lightbox
+        [:a {:href  (str "#/home/")
+             :class "lightbox"
+             :id    (str "/home/" img)
+             :style {:display "hidden"}}
+         [:img {:src  link
+                :href link}]]
+        ;;Thumbnail
+        [:a {:href (str "#/home/" img)}
+         [:div [:img {:src   link
+                      :class "thumbnail"
+                      :style {:max-height "30vh"}}]]]]
+       [ui/flat-button {:on-click #(copy-text link)
+                        :label    img
+                        :style    {:width    "100%"
+                                   :position "relative"
+                                   :overflow "visible"}}]])))
 
 (defn home []
   (let [images   (re-frame/subscribe [:images])
@@ -71,14 +72,16 @@
       [ui/paper
        {:class "row content"
         :style {:border-radius "0px"}}
-       (accountant.core/navigate! (str "/#/home/" @pagenum))
+       (accountant/navigate! (str "/#/home/" @pagenum))
        [ui/flat-button {:label    "Refresh images"
                         :on-click #(http/auth-if-session!)
                         :style    {:width "100vw"}}]
 
        [:div.image-container
         (let [images (partition-all 20 (remove nil? (vec @images)))
-              page   (if (and (number? @pagenum) (not-empty (flatten images))) (nth images (or @pagenum 0)) [])]
+              cond   (and (number? @pagenum) (not-empty (flatten images)))
+              index  (or @pagenum 0)
+              page   (if cond (nth images index) [])]
           (for [i page] [:div.card-box
-                           {:key i}
-                           [card-from-image i]]))]])))
+                         {:key i}
+                         [card-from-image i]]))]])))

@@ -6,7 +6,7 @@
                                            metadata]]
             [digest :as digest]
             [clojure.string :as string]
-            [dante.util :refer [frame-text info]]
+            [dante.util :refer [frame-text info url]]
             [buddy.hashers :as hs]
             [buddy.sign.jwt :as jwt]
             [buddy.core.keys :as ks]
@@ -180,7 +180,6 @@
 (defn file->md5 [file]
   (digest/md5 file))
 
-
 (defn file-exists? [file]
   "Checks if a file object `file` exists in the database"
   (let [md5   (file->md5 file)
@@ -192,15 +191,17 @@
   (let [user?  (not (nil? (mc/find-one db "users" {:key key})))
         failed (failure :msg "Failed to process store request")
         md5    (file->md5 file)]
-    (if user? (let [upload   (store-file (make-input-file fs file) (filename name)
-                                         (metadata {:format "png"}) (content-type "image/png"))
-                    update   (update-user {:key key} {$push {:images md5}})
-                    updated? (res/updated-existing? update)
-                    user     (find-one-user {:key key} :fields :username)]
-                (if upload (info "Stored image" name md5) (info "Failed to store image" name md5))
-                (if updated? (info "Updated user" user) (info "Failed to update user" user))
-                (success :msg (str "Storing file: " {:file name :md5 md5})))
-        failed)))
+    (println user?)
+    (if user?
+      (let [upload   (store-file (make-input-file fs file) (filename name)
+                                 (metadata {:format "png"}) (content-type "image/png"))
+            update   (update-user {:key key} {$push {:images md5}})
+            updated? (res/updated-existing? update)
+            user     (find-one-user {:key key} :fields :username)]
+        (if upload (info "Stored image" name md5) (info "Failed to store image" name md5))
+        (if updated? (info "Updated user" user) (info "Failed to update user" user))
+        {:status 200 :body (str (url false) "i/" md5 ".png")})
+      failed)))
 
 (defn store-img [file name key]
   "Stores an image file using `file` `name` and `key` to identify user"

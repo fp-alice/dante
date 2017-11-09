@@ -23,10 +23,10 @@
 
 (defn page-frame [username]
   (let [images (re-frame/subscribe [:images])
-        num (re-frame/subscribe [:pagenum])
-        panel (re-frame/subscribe [:panel])]
+        num    (re-frame/subscribe [:pagenum])
+        panel  (re-frame/subscribe [:panel])]
     (fn [username]
-      (let [amt (dec (count (get-image-coll @images)))
+      (let [amt  (dec (count (get-image-coll @images)))
             page (if (not (empty? @images)) (str " " @num "/" amt) "")]
         [ui/app-bar {:icon-element-right (reagent/as-element
                                           (if (= username "")
@@ -37,7 +37,7 @@
                                             [ui/flat-button
                                              {:icon  (ic/action-account-box)
                                               :label username}]))
-                     :title (str "Dante" (if (and page (= :home @panel)) (str " page " page )))}]))))
+                     :title              (str "Dante" (if (and page (= :home @panel)) (str " page " page)))}]))))
 
 (defn set-page [number condition key value]
   (info number condition key value)
@@ -54,7 +54,7 @@
         images (re-frame/subscribe [:images])
         btn    (re-frame/subscribe [:bottom-page])]
     (fn [logged-in?]
-      (let [coll  (dec (count (get-image-coll @images)))
+      (let [coll (dec (count (get-image-coll @images)))
             prev (if (>= @num 1) (dec @num) 0)
             next (if (< @num coll) (inc @num) coll)]
         [ui/bottom-navigation {:selected-index @btn}
@@ -66,7 +66,7 @@
          (nav-item (ic/av-skip-next)         "last page"     5 (not= @btn coll) :set-pagenum coll)]))))
 
 (defn current-page []
-  (let [page (re-frame/subscribe [:panel])
+  (let [page     (re-frame/subscribe [:panel])
         username (re-frame/subscribe [:username])]
     (fn []
       [ui/mui-theme-provider
@@ -106,8 +106,8 @@
   (accountant/configure-navigation!
    {:nav-handler
     (fn [path]
-      (let [fun (fn [] (let [p (re-frame/subscribe [:pagenum])]
-                        (accountant.core/navigate! (str "/#/home/" @p))))
+      (let [fun   (fn [] (let [p (re-frame/subscribe [:pagenum])]
+                          (accountant.core/navigate! (str "/#/home/" @p))))
             check (mapv #(= path %) ["/#/home/" "/#/home"])]
         (if (some true? check) (fun) (secretary/dispatch! path))))
     :path-exists?
@@ -115,5 +115,3 @@
       (secretary/locate-route path))})
   (accountant/dispatch-current!)
   (mount-root))
-
-(init!)
