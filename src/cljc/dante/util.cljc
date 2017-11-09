@@ -11,7 +11,7 @@
   (reduce str init (vec (interpose " # " (remove empty? (map str strings))))))
 
 (defn frame-text [& strings]
-  "Frrame and print `strings`"
+  "Frame and print `strings`"
   (let [text (format-str strings)
         len  (count text)
         left (- 81 len)
@@ -22,6 +22,7 @@
     (println res)))
 
 (defn info [& strings]
+  "info-print `strings`"
   (println (format-str strings :init "├╼ ")))
 
 (defn in?
@@ -33,7 +34,5 @@
       (some #(= elem %) coll)
       false)))
 
-(defn url [prod?]
-  (if prod?
-    "http://shekels.wtf/"
-    "http://localhost:3000/"))
+(def url "http://shekels.wtf/")
+;; (def url "http://localhost:3000/")

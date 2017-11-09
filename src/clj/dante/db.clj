@@ -200,7 +200,7 @@
             user     (find-one-user {:key key} :fields :username)]
         (if upload (info "Stored image" name md5) (info "Failed to store image" name md5))
         (if updated? (info "Updated user" user) (info "Failed to update user" user))
-        {:status 200 :body (str (url false) "i/" md5 ".png")})
+        {:status 200 :body (str url "i/" md5 ".png")})
       failed)))
 
 (defn store-img [file name key]

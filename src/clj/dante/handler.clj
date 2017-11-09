@@ -33,9 +33,9 @@
   []
   [:head
    [:meta {:charset "utf-8"}]
-   [:meta {:name "viewport"
+   [:meta {:name    "viewport"
            :content "width=device-width, initial-scale=1"}]
-   (include-css "/css/site.css")
+   (include-css "/css/main.css")
    (include-css "//cdn.muicss.com/mui-0.9.27/css/mui.min.css")
    (include-css "https://fonts.googleapis.com/css?family=Roboto")
    (include-js "//cdn.muicss.com/mui-0.9.27/js/mui.min.js")])
@@ -54,13 +54,12 @@
   (let [image                              (:image request)
         keyvec                             [:filename :tempfile :size :content-type]
         [file-name file size type :as all] (map #(get image %) keyvec)]
-    (clojure.pprint/pprint request)
-    (clojure.pprint/pprint all)
     (if (and (in? ["image/gif" "image/jpeg" "image/png"] type) (< size 50000))
       (let [res (db/store-img file file-name (:key request))]
         (println res)
         {:status 200
-         :body   res}) {:status 500 :body ("Content type " type " not allowed.")})))
+         :body   res})
+      {:status 500 :body ("Content type " type " not allowed.")})))
 
 (defn session
   "Authenticates a user"

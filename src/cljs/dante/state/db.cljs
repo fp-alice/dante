@@ -30,10 +30,14 @@
               []
               m)))
 
-(defn get-key [keys]
+(defn get-key
+  "joins `keys` with - and turns into a keyword"
+  [keys]
   (keyword (string/join "-" (map name keys))))
 
-(defn set-key [keys]
+(defn set-key
+  "prepends `keys` with set and uses get-key"
+  [keys]
   (get-key (concat [:set] keys)))
 
 (defn generate-function
@@ -46,7 +50,7 @@
        set
        (fn [db [_ value]]
          ;; (println get " : " value)
-    (assoc-in db path value)))
+         (assoc-in db path value)))
       (re-frame/reg-sub-raw
        get
        (fn [db]

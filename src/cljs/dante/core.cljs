@@ -58,12 +58,12 @@
             prev (if (>= @num 1) (dec @num) 0)
             next (if (< @num coll) (inc @num) coll)]
         [ui/bottom-navigation {:selected-index @btn}
-         (nav-item (ic/av-skip-previous)     "first page"    0 (not= @btn 0)    :set-pagenum 0)
-         (nav-item (ic/av-fast-rewind)       "previous page" 1 (>    @btn 1)    :set-pagenum prev)
-         (nav-item (ic/image-photo)          "uploads"       2 (not= @btn 2)    :set-panel   :home)
-         (nav-item (ic/action-accessibility) "info"          3 (not= @btn 3)    :set-panel   :info)
-         (nav-item (ic/av-fast-forward)      "next page"     4 (not= @btn coll) :set-pagenum next)
-         (nav-item (ic/av-skip-next)         "last page"     5 (not= @btn coll) :set-pagenum coll)]))))
+         (nav-item (ic/av-skip-previous) "first page" 0 (not= @btn 0) :set-pagenum 0)
+         (nav-item (ic/av-fast-rewind) "previous page" 1 (> @btn 1) :set-pagenum prev)
+         (nav-item (ic/image-photo) "uploads" 2 (not= @btn 2) :set-panel :home)
+         (nav-item (ic/action-accessibility) "info" 3 (not= @btn 3) :set-panel :info)
+         (nav-item (ic/av-fast-forward) "next page" 4 (not= @btn coll) :set-pagenum next)
+         (nav-item (ic/av-skip-next) "last page" 5 (not= @btn coll) :set-pagenum coll)]))))
 
 (defn current-page []
   (let [page     (re-frame/subscribe [:panel])
@@ -72,14 +72,10 @@
       [ui/mui-theme-provider
        {:mui-theme (get-mui-theme (aget js/MaterialUIStyles "DarkRawTheme"))}
        [:div.box
-        [:div
-         {:class "row header"
-          :style {:position "static"}}
+        [:div.row-header
          [page-frame @username]]
         (if-not (= "" @username) (route/views @page) (route/views :login))
-        [:div
-         {:class "row footer"
-          :style {:position "static"}}
+        [:div.row-footer
          [bottom-bar (= @username "")]]]])))
 
 (defn mount-root []
@@ -107,7 +103,7 @@
    {:nav-handler
     (fn [path]
       (let [fun   (fn [] (let [p (re-frame/subscribe [:pagenum])]
-                          (accountant.core/navigate! (str "/#/home/" @p))))
+                           (accountant.core/navigate! (str "/#/home/" @p))))
             check (mapv #(= path %) ["/#/home/" "/#/home"])]
         (if (some true? check) (fun) (secretary/dispatch! path))))
     :path-exists?

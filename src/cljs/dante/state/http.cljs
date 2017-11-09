@@ -3,17 +3,17 @@
             [cljs.core.async :refer [<!]]
             [dante.state.storage :as storage]
             [re-frame.core :as re-frame]
-            [dante.state.db :as db])
+            [dante.state.db :as db]
+            [dante.util :refer [url]])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
-(def url "http://localhost:3000/")
-;; (def url "http://shekels.wtf/")
 (defn- json-req [location params-map function & type]
-  (go (let [url (str url location)
+  "Sends request to `location` with `params-map` and runs `function` on the result. Optional MIME type."
+  (go (let [url      (str url location)
             response (<! (http/post
                           url
-                          {:headers           {"content-type" (or type "application/json")}
-                           :json-params      params-map}))
+                          {:headers     {"content-type" (or type "application/json")}
+                           :json-params params-map}))
             body     (:body response)]
         (if-not (= nil body)
           (function body)))))
@@ -65,6 +65,7 @@
 
 
 (defn auth-if-session! []
+  "Authenticate user if stored session exists"
   (let [key? (nil? (storage/get-item "session"))]
     (if-not key?
       (auth-with-session (storage/get-item "session")))))
