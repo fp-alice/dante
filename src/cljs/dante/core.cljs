@@ -49,11 +49,11 @@
                               :label    label
                               :on-click #(set-page number condition key value)}])
 
-(defn bottom-bar [logged-in?]
+(defn bottom-bar []
   (let [num    (re-frame/subscribe [:pagenum])
         images (re-frame/subscribe [:images])
         btn    (re-frame/subscribe [:bottom-page])]
-    (fn [logged-in?]
+    (fn []
       (let [coll (dec (count (get-image-coll @images)))
             prev (if (>= @num 1) (dec @num) 0)
             next (if (< @num coll) (inc @num) coll)]
@@ -69,14 +69,16 @@
   (let [page     (re-frame/subscribe [:panel])
         username (re-frame/subscribe [:username])]
     (fn []
+      (if (and (not= @page :login) (= "" @username))
+        (re-frame/dispatch [:set-panel :login]))
       [ui/mui-theme-provider
        {:mui-theme (get-mui-theme (aget js/MaterialUIStyles "DarkRawTheme"))}
        [:div.box
         [:div.row-header
          [page-frame @username]]
-        (if-not (= "" @username) (route/views @page) (route/views :login))
+        [route/views @page]
         [:div.row-footer
-         [bottom-bar (= @username "")]]]])))
+         [bottom-bar]]]])))
 
 (defn mount-root []
   (reagent/render [current-page] (.getElementById js/document "app")))
@@ -103,11 +105,12 @@
    {:nav-handler
     (fn [path]
       (let [fun   (fn [] (let [p (re-frame/subscribe [:pagenum])]
-                           (accountant.core/navigate! (str "/#/home/" @p))))
+                          (accountant.core/navigate! (str "/#/home/" @p))))
             check (mapv #(= path %) ["/#/home/" "/#/home"])]
         (if (some true? check) (fun) (secretary/dispatch! path))))
     :path-exists?
     (fn [path]
       (secretary/locate-route path))})
   (accountant/dispatch-current!)
+  (http/auth-if-session!)
   (mount-root))

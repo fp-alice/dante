@@ -1,12 +1,12 @@
-(ns dante.middleware
-(:require [compojure.core :refer :all]
+(ns dante.middleware)
+(:require [compojure.core :refer :all
             [ring.middleware.defaults :refer [site-defaults wrap-defaults]]
             [ring.middleware.reload :refer [wrap-reload]]
             [ring.middleware.params :refer [wrap-params]]
             [ring.middleware.json :refer [wrap-json-params wrap-json-response]]
             [ring.middleware.keyword-params :refer [wrap-keyword-params]]
             [clojure.string :as string]
-            [dante.util :refer [frame-text info]]))
+            [dante.util :refer [frame-text info]]])
 
 (defn date [& {:keys [time format]
                :or   {time (new java.util.Date)

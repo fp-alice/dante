@@ -7,7 +7,8 @@
             [goog.events :as gevents]
             [accountant.core :as accountant]
             [cljs-react-material-ui.icons :as ic]
-            [dante.util :refer [url]])
+            [dante.util :refer [url]]
+            [reagent.core :as reagent])
   (:import [goog.dom query]))
 
 (defn copy-text [text]
@@ -37,35 +38,44 @@
 
 (defn card-from-image [img]
   "Makes a card for the `img`"
-  (let [img  (str img)
-        link (str url "i/" img ".png")
-        page (re-frame/subscribe [:pagenum])]
-    (fn []
+  (let [img   (str img)
+        link  (str url "i/" img ".png")
+        page  (re-frame/subscribe [:pagenum])
+        key   (re-frame/subscribe [:key])
+        state (reagent/atom false)]
+    (fn [img]
       [ui/card
        [ui/card-media  {:class    "card-media" :style {:overflow "hidden"}
                         :width    "100%"
                         :height   "100%"
                         :position "relative"} ;;  {:style {:position "relative"}}
         ;;Hidden lightbox
-        [:a {:href  (str "#/home/")
-             :class "lightbox"
-             :id    (str "/home/" img)
-             :style {:display "hidden"}}
-         [:img {:src  link
-                :href link}]]
+        [:div
+         [:a {:href  (str "#/home/")
+              :class "lightbox"
+              :id    (str "/home/" img)
+              :style {:display "hidden"}}
+          [:img {:src  link
+                 :href link}]]
 
-        ;;Thumbnail
-        [:a {:href (str "#/home/" img)}
-         [:div {:position "relative"}
-          [:img {:src   link
-                 :class "blur"}]
-          [:img {:src   link
-                 :class "thumbnail"}]]]]
-       [ui/flat-button {:on-click #(copy-text link)
-                        :label    img
-                        :style    {:width    "100%"
-                                   :position "relative"
-                                   :overflow "hidden"}}]])))
+         ;;Thumbnail
+         [:a {:href (str "#/home/" img)}
+          [:div {:position "relative"}
+           [:img {:src   link
+                  :class "blur"}]
+           [:img {:src   link
+                  :class "thumbnail"}]]]]]
+       [ui/card-actions {:class "card-action"}
+        [ui/flat-button {:on-click #(copy-text link)
+                         :icon     (ic/content-link)
+                         :label    "link"
+                         :class    "card-button"}]
+        [ui/flat-button {:on-click #(if (not @state)
+                                      (swap! state not)
+                                      (http/delete-img @key img))
+                         :icon     (ic/action-delete)
+                         :label    (if @state "click to confirm" "delete")
+                         :class    "card-button"}]]])))
 
 (defn home []
   "Shows the home page"
@@ -79,7 +89,7 @@
        (accountant/navigate! (str "/#/home/" @pagenum))
        [ui/flat-button {:label    "Refresh images"
                         :on-click #(http/auth-if-session!)
-                        :class "fw-button"}]
+                        :class    "fw-button"}]
 
        [:div.image-container
         (let [images (partition-all 20 (reverse (remove nil? (vec @images))))

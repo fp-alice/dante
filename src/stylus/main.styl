@@ -4,6 +4,10 @@ body
   margin 0
   overflow-x hidden
 
+*
+  break-inside avoid
+  -webkit-column-break-inside avoid
+
 .fw-button
   width 100vw
 
@@ -46,67 +50,54 @@ body
   justify-content center
   width 256px !important
 
- .card-media
-   overflow hidden
-   width 100%
-   height 100%
-   position relative
+.card-media
+  overflow hidden
+  width 100%
+  height 100%
+  position relative
 
+.card-action
+  display flex
 
+.card-button
+  flex-grow 1
 
+.lightbox
+  display none
+  position fixed
+  z-index 999
+  width 100%
+  height 100%
+  text-align center
+  top 0
+  left 0
+  background: linear-gradient(125deg, rgba(165,165,165,0.5), rgba(171,156,156,0.5), rgba(96,86,86,0.5))
+  background-size 600% 600%
 
+.lightbox img
+  max-width 85%
+  max-height 85%
+  position relative
+  top 50%
+  transform translateY(-50%)
 
+.lightbox:target
+  outline none
+  display block
 
+.image-container
+  column-count: 3
+  column-gap: 1em
+  margin: 10px
+  padding: 10px
 
-
-
-.lightbox {
-/** Default lightbox to hidden */
-  display: none;
-/** Position and style */
-  position: fixed;
-  z-index: 999;
-  width: 100%;
-  height: 100%;
-  text-align: center;
-  top: 0;
-  left: 0;
-  background: linear-gradient(125deg, rgba(165,165,165,0.5), rgba(171,156,156,0.5), rgba(96,86,86,0.5));
-  background-size: 600% 600%;
-}
-
-.lightbox img {
-/** Pad the lightbox image */
-  max-width: 85%;
-  max-height: 85%;
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.lightbox:target {
-/** Remove default browser outline */
-  outline: none;
-/** Unhide lightbox **/
-  display: block;
-}
-
-.image-container {
-  column-count: 3;
-  column-gap: 1em;
-  margin: 10px;
-  padding: 10px;
-}
-
-.image-container .card-box {
-  display: inline-block;
-  margin: 0 0 1em;
-  width: 100%;
-  display: absolute;
-}
+.image-container .card-box
+  display inline-block
+  margin 0 0 1em
+  width 100%
+  display absolute
 
 .thumbnail
-  // float: center;
   position absolute
   max-height 30vh
   max-width 30vw
@@ -122,5 +113,7 @@ body
   max-height 30vh
   max-width 30vw
   min-width 100%
-  height auto
+  height 100%
+  overflow hidden
   margin 0 auto
+  top-margin 100px

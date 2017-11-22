@@ -5,5 +5,5 @@
   (:gen-class))
 
 (defn -main [& args]
-  (let [port (Integer/parseInt (or (env :port) "80" #_"3000"))]
+  (let [port (Integer/parseInt (or (env :port) #_"80" "3000"))]
     (run-jetty app {:port port :join? false})))

@@ -1,9 +1,8 @@
 (ns dante.views.route
-  (:require [dante.views.home :as home]
-            [dante.views.login :as login]
+  (:require [accountant.core :as accountant]
+            [dante.views.home :as home]
             [dante.views.info :as info]
-            [accountant.core :as accountant]
-            [reagent.core :as reagent]))
+            [dante.views.login :as login]))
 
 (defmulti view identity)
 (defmethod view :home    [] [home/home])

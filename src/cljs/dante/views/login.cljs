@@ -8,9 +8,10 @@
   (let [username       (re-frame/subscribe [:login-username])
         password       (re-frame/subscribe [:login-password])
         password-check (re-frame/subscribe [:login-password-check])
-        sign-up        (r/atom true)]
+        sign-up        (r/atom false)]
+    (if (= "" @username)
+      (http/auth-if-session!))
     (fn []
-      (if (not (= "" @username)) (http/auth-if-session!))
       [ui/paper
        {:class "row-content" :style {:overflow-y "auto" :height "100%"}}
        [:div.login
@@ -50,4 +51,5 @@
          [ui/raised-button
           {:label    (if-not @sign-up "Switch to sign up page" "Switch to log in page")
            :on-click #(swap! sign-up not)
-           :class    "input"}]]]])))
+           :class    "input"}]]]]))
+  )

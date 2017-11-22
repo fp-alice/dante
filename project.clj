@@ -2,7 +2,7 @@
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
   :license {:name "Eclipse Public License"
-            :url "http://www.eclipse.org/legal/epl-v10.html"}
+            :url  "http://www.eclipse.org/legal/epl-v10.html"}
 
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [ring-server "0.5.0"]
@@ -39,7 +39,7 @@
             [lein-asset-minifier "0.2.7"
              :exclusions [org.clojure/clojure]]]
 
-  :ring {:handler dante.handler/app
+  :ring {:handler      dante.handler/app
          :uberwar-name "dante.war"}
 
   :min-lein-version "2.5.0"
@@ -58,42 +58,37 @@
 
   :minify-assets
   {:assets
-   {"resources/public/css/site.min.css" "resources/public/css/site.css"}}
+   {"resources/public/css/main.min.css" "resources/public/css/main.css"}}
 
   :cljsbuild
   {:builds {:min
             {:source-paths ["src/cljs" "src/cljc" "env/prod/cljs"]
              :compiler
-             {:output-to        "target/cljsbuild/public/js/app.js"
-              :output-dir       "target/cljsbuild/public/js"
-              :source-map       "target/cljsbuild/public/js/app.js.map"
+             {:output-to     "target/cljsbuild/public/js/app.js"
+              :output-dir    "target/cljsbuild/public/js"
+              :source-map    "target/cljsbuild/public/js/app.js.map"
               :optimizations :advanced
               :pretty-print  false}}
             :app
             {:source-paths ["src/cljs" "src/cljc" "env/dev/cljs"]
-             :figwheel {:on-jsload "dante.core/mount-root"}
+             :figwheel     {:on-jsload "dante.core/mount-root"}
              :compiler
-             {:main "dante.dev"
-              :asset-path "/js/out"
-              :output-to "target/cljsbuild/public/js/app.js"
-              :output-dir "target/cljsbuild/public/js/out"
-              :source-map true
+             {:main          "dante.dev"
+              :asset-path    "/js/out"
+              :output-to     "target/cljsbuild/public/js/app.js"
+              :output-dir    "target/cljsbuild/public/js/out"
+              :source-map    true
               :optimizations :none
-              :pretty-print  true}}
-
-
-
-            }
-   }
+              :pretty-print  true}}}}
 
 
   :figwheel
   {:http-server-root "public"
-   :server-port 3449
-   :nrepl-port 7002
+   :server-port      3449
+   :nrepl-port       7002
    :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]
-   :css-dirs ["resources/public/css"]
-   :ring-handler dante.handler/app}
+   :css-dirs         ["resources/public/css"]
+   :ring-handler     dante.handler/app}
 
 
 
@@ -111,17 +106,17 @@
                                   :nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
 
                    :source-paths ["env/dev/clj"]
-                   :plugins [[lein-figwheel "0.5.14"]
-                             ]
+                   :plugins      [[lein-figwheel "0.5.14"]]
+
 
                    :injections [(require 'pjstadig.humane-test-output)
                                 (pjstadig.humane-test-output/activate!)]
 
                    :env {:dev true}}
 
-             :uberjar {:hooks [minify-assets.plugin/hooks]
+             :uberjar {:hooks        [minify-assets.plugin/hooks]
                        :source-paths ["env/prod/clj"]
-                       :prep-tasks ["compile" ["cljsbuild" "once" "min"]]
-                       :env {:production true}
-                       :aot :all
-                       :omit-source true}})
+                       :prep-tasks   ["compile" ["cljsbuild" "once" "min"]]
+                       :env          {:production true}
+                       :aot          :all
+                       :omit-source  true}})

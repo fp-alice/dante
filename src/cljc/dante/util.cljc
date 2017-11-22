@@ -34,5 +34,5 @@
       (some #(= elem %) coll)
       false)))
 
-(def url "http://shekels.wtf/")
-;; (def url "http://localhost:3000/")
+;; (def url "http://shekels.wtf/")
+(def url "http://localhost:3000/")

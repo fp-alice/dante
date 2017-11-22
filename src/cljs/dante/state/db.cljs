@@ -1,9 +1,7 @@
 (ns dante.state.db
-  (:require [cljs-time.coerce :refer [to-long]]
-            [cljs-time.core :refer [now]]
-            [clojure.string :as string]
-            [reagent.core :as reagent]
-            [re-frame.core :as re-frame])
+  (:require [clojure.string :as string]
+            [re-frame.core :as re-frame]
+            [reagent.core :as reagent])
   (:require-macros [reagent.ratom :refer [reaction]]))
 
 ;Default user state
@@ -17,7 +15,8 @@
                               :pagenum 0
                               :login    {:username       ""
                                          :password       ""
-                                         :password-check ""}}))
+                                         :password-check ""}
+                              :script ""}))
 
 (defn map->paths
   "Turns map into vector of deepest nodes"
@@ -60,3 +59,21 @@
  :init
  (fn [_ _]
    @userstate))
+
+;; (re-frame/reg-event-db
+;;  :load-defaults
+;;  (fn [cofx event]
+;;    (let [val (:local-store cofx)
+;;          db  (:db cofx)]
+;;      {:db (assoc db :defaults val)})))
+
+(re-frame/reg-event-fx
+ :load-defaults
+ [ (re-frame/inject-cofx :local-store "defaults-key")]     ;; <-- this is new
+ (fn [cofx event]
+   (let [val (:local-store cofx)
+         db  (:db cofx)
+         ret (assoc db :defaults val)]
+     (println ret)
+     (println cofx event)
+     {:db ret})))

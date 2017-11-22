@@ -4,10 +4,6 @@ body {
   margin: 0;
   overflow-x: hidden;
 }
-* {
-  break-inside: avoid;
-  -webkit-column-break-inside: avoid;
-}
 .fw-button {
   width: 100vw;
 }
@@ -56,12 +52,6 @@ body {
   height: 100%;
   position: relative;
 }
-.card-action {
-  display: flex;
-}
-.card-button {
-  flex-grow: 1;
-}
 .lightbox {
   display: none;
   position: fixed;
@@ -82,7 +72,7 @@ body {
   transform: translateY(-50%);
 }
 .lightbox:target {
-  outline: none;
+  outline: 0;
   display: block;
 }
 .image-container {
@@ -113,8 +103,7 @@ body {
   max-height: 30vh;
   max-width: 30vw;
   min-width: 100%;
-  height: 100%;
+  height: auto;
   overflow: hidden;
   margin: 0 auto;
-  top-margin: 100px;
 }

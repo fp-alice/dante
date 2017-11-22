@@ -2,9 +2,8 @@
   (:require [cljs-http.client :as http]
             [cljs.core.async :refer [<!]]
             [dante.state.storage :as storage]
-            [re-frame.core :as re-frame]
-            [dante.state.db :as db]
-            [dante.util :refer [url]])
+            [dante.util :refer [url]]
+            [re-frame.core :as re-frame])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
 (defn- json-req [location params-map function & type]
@@ -44,13 +43,19 @@
                      (re-frame/dispatch [:set-session (:session user)])
                      (re-frame/dispatch [:set-key (:key user)])
                      (re-frame/dispatch [:set-images (:images user)])
-                     (re-frame/dispatch [:set-username (:username user)])
-                     (re-frame/dispatch [:set-panel :home])))))))
+                     (re-frame/dispatch-sync [:set-username (:username user)])
+                     (re-frame/dispatch-sync [:set-panel :home])))))))
+
+(defn get-script [key url]
+  ;; (println session)
+  (json-req "api/script" {:key key
+                          :url url}
+            #(re-frame/dispatch [:set-script %])))
 
 (defn sign-up [username password]
   ;; (println session)
   (json-req "api/sign-up" {:username username
-                        :password password}
+                           :password password}
             #(do
                (let [user (:user %)]
                  ;; (println user)
@@ -63,9 +68,13 @@
                      (re-frame/dispatch [:set-username (:username user)])
                      (re-frame/dispatch [:set-panel :home])))))))
 
-
 (defn auth-if-session! []
   "Authenticate user if stored session exists"
   (let [key? (nil? (storage/get-item "session"))]
     (if-not key?
       (auth-with-session (storage/get-item "session")))))
+
+(defn delete-img [key md5]
+  (json-req "api/delete" {:key key
+                          :md5 md5}
+            #(do (auth-if-session!))))
